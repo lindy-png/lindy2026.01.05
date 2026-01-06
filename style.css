@@ -6,17 +6,19 @@
 }
 
 :root {
-    --cream: #FDFCFA;
-    --warm-white: #F8F6F3;
-    --light-beige: #F0EDE8;
-    --medium-beige: #E6E2DB;
-    --warm-gray: #9B9691;
+    --cream: #FAF8F5;
+    --warm-white: #F5F1EB;
+    --light-beige: #EDE8E0;
+    --medium-beige: #DDD6CB;
+    --warm-taupe: #B5A89A;
+    --warm-gray: #8B8179;
     --dark-gray: #4A4644;
     --charcoal: #2B2825;
-    --accent: #C9BDB0;
+    --accent: #C9A980;
 
-    --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --transition: all 0.2s ease;
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 html {
@@ -24,9 +26,9 @@ html {
 }
 
 body {
-    font-family: var(--font-main);
+    font-family: var(--font-sans);
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--charcoal);
     background-color: var(--cream);
     -webkit-font-smoothing: antialiased;
@@ -34,7 +36,7 @@ body {
 }
 
 ::selection {
-    background-color: var(--medium-beige);
+    background-color: var(--light-beige);
     color: var(--charcoal);
 }
 
@@ -51,63 +53,67 @@ a {
 
 /* Hero Section */
 .hero {
-    min-height: 90vh;
+    min-height: 92vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4rem 2rem;
-    background-color: var(--cream);
+    padding: 6rem 2rem;
+    background: linear-gradient(to bottom, var(--cream) 0%, var(--warm-white) 100%);
 }
 
 .hero-content {
-    max-width: 720px;
+    max-width: 740px;
     width: 100%;
 }
 
 .name {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 400;
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 7vw, 5rem);
+    font-weight: 300;
     color: var(--charcoal);
-    margin-bottom: 1.5rem;
-    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
 }
 
 .tagline {
-    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-size: clamp(1.15rem, 2.5vw, 1.5rem);
     font-weight: 400;
     color: var(--dark-gray);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
     line-height: 1.5;
 }
 
 .subtitle {
     font-size: 1.05rem;
     color: var(--warm-gray);
-    margin-bottom: 2.5rem;
-    line-height: 1.7;
+    margin-bottom: 3rem;
+    line-height: 1.75;
+    font-weight: 400;
 }
 
 .hero-links {
     display: flex;
-    gap: 2rem;
+    gap: 2.5rem;
     flex-wrap: wrap;
 }
 
 .hero-links .link {
     font-size: 0.95rem;
     color: var(--charcoal);
-    padding-bottom: 2px;
-    border-bottom: 1px solid var(--medium-beige);
+    padding-bottom: 3px;
+    border-bottom: 1px solid transparent;
     transition: var(--transition);
 }
 
 .hero-links .link:hover {
-    border-bottom-color: var(--charcoal);
+    border-bottom-color: var(--warm-taupe);
+    color: var(--dark-gray);
 }
 
 /* Sections */
 .section {
-    padding: 6rem 2rem;
+    padding: 7rem 2rem;
     background-color: var(--cream);
 }
 
@@ -116,17 +122,17 @@ a {
 }
 
 .container {
-    max-width: 920px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
 .section-title {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 500;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--warm-gray);
-    margin-bottom: 3rem;
+    color: var(--warm-taupe);
+    margin-bottom: 3.5rem;
 }
 
 /* About Section */
@@ -138,29 +144,29 @@ a {
     font-size: 1.05rem;
     line-height: 1.8;
     color: var(--charcoal);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
 }
 
 .logos {
-    margin-top: 4rem;
-    padding-top: 3rem;
+    margin-top: 5rem;
+    padding-top: 3.5rem;
     border-top: 1px solid var(--medium-beige);
 }
 
 .logos-title {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--warm-gray);
-    margin-bottom: 1.5rem;
+    color: var(--warm-taupe);
+    margin-bottom: 2rem;
 }
 
 .logos-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem 2.5rem;
-    margin-bottom: 1.5rem;
+    gap: 1.75rem 3rem;
+    margin-bottom: 2rem;
 }
 
 .logo-name {
@@ -172,13 +178,13 @@ a {
 .logos-note {
     font-size: 0.95rem;
     color: var(--warm-gray);
-    line-height: 1.6;
-    margin-top: 1rem;
+    line-height: 1.7;
+    margin-top: 1.25rem;
 }
 
 /* Experience Section */
 .job {
-    margin-bottom: 4rem;
+    margin-bottom: 4.5rem;
 }
 
 .job:last-child {
@@ -189,20 +195,21 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     gap: 2rem;
 }
 
 .job-title {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     font-weight: 500;
     color: var(--charcoal);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.35rem;
 }
 
 .job-company {
     font-size: 0.95rem;
-    color: var(--warm-gray);
+    color: var(--warm-taupe);
+    font-weight: 400;
 }
 
 .job-date {
@@ -212,56 +219,57 @@ a {
 }
 
 .job-content {
-    margin-top: 1rem;
+    margin-top: 1.25rem;
 }
 
 .job-summary {
     font-size: 1rem;
-    line-height: 1.7;
+    line-height: 1.75;
     color: var(--charcoal);
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .job-details {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    padding-left: 1rem;
-    border-left: 1px solid var(--medium-beige);
+    gap: 1.5rem;
+    padding: 2rem;
+    background-color: rgba(237, 232, 224, 0.3);
+    border-left: 2px solid var(--medium-beige);
 }
 
 .detail-item {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
 .detail-label {
     font-size: 0.8rem;
     font-weight: 500;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--warm-gray);
+    color: var(--warm-taupe);
 }
 
 .detail-value {
     font-size: 0.95rem;
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--dark-gray);
 }
 
 /* Skills Section */
 .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 4rem;
 }
 
 .skill-category {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 500;
     color: var(--charcoal);
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
 }
 
 .skill-list {
@@ -272,23 +280,25 @@ a {
 .skill-list li {
     font-size: 0.95rem;
     color: var(--dark-gray);
-    margin-bottom: 0.6rem;
-    padding-left: 1rem;
+    margin-bottom: 0.75rem;
+    padding-left: 1.25rem;
     position: relative;
+    line-height: 1.6;
 }
 
 .skill-list li::before {
-    content: '·';
+    content: '—';
     position: absolute;
     left: 0;
-    color: var(--warm-gray);
+    color: var(--warm-taupe);
+    font-weight: 300;
 }
 
 /* Community Section */
 .community-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2.5rem;
 }
 
 .community-item {
@@ -299,17 +309,18 @@ a {
 .community-type {
     font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--warm-gray);
-    margin-bottom: 0.75rem;
+    color: var(--warm-taupe);
+    margin-bottom: 0.85rem;
 }
 
 .community-item h4 {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 500;
     color: var(--charcoal);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
 }
 
 .community-date {
@@ -319,28 +330,28 @@ a {
 
 /* Contact Section */
 .contact-section {
-    padding: 6rem 2rem 4rem;
+    padding: 7rem 2rem 5rem;
 }
 
 .contact-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    margin-bottom: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 3.5rem;
 }
 
 .contact-item {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
 .contact-label {
     font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--warm-gray);
+    color: var(--warm-taupe);
 }
 
 .contact-link,
@@ -354,54 +365,57 @@ a {
 }
 
 .contact-link:hover {
-    color: var(--warm-gray);
+    color: var(--warm-taupe);
 }
 
 .social-links {
     display: flex;
     gap: 2rem;
-    padding-top: 2rem;
+    padding-top: 2.5rem;
     border-top: 1px solid var(--medium-beige);
 }
 
 .social-link {
     font-size: 0.95rem;
     color: var(--charcoal);
-    padding: 0.75rem 1.5rem;
+    padding: 0.85rem 1.75rem;
     border: 1px solid var(--medium-beige);
     transition: var(--transition);
+    background-color: transparent;
 }
 
 .social-link:hover {
-    border-color: var(--charcoal);
+    border-color: var(--warm-taupe);
+    background-color: var(--light-beige);
 }
 
 /* Footer */
 .footer {
-    padding: 2rem;
+    padding: 2.5rem 2rem;
     text-align: center;
     background-color: var(--warm-white);
+    border-top: 1px solid var(--medium-beige);
 }
 
 .footer p {
     font-size: 0.85rem;
     color: var(--warm-gray);
-    letter-spacing: 0.03em;
+    letter-spacing: 0.05em;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .hero {
-        min-height: 80vh;
-        padding: 3rem 1.5rem;
-    }
-
-    .section {
+        min-height: 85vh;
         padding: 4rem 1.5rem;
     }
 
+    .section {
+        padding: 5rem 1.5rem;
+    }
+
     .contact-section {
-        padding: 4rem 1.5rem 3rem;
+        padding: 5rem 1.5rem 4rem;
     }
 
     .job-header {
@@ -409,17 +423,23 @@ a {
         gap: 0.5rem;
     }
 
+    .job-details {
+        padding: 1.5rem;
+    }
+
     .skills-grid {
         grid-template-columns: 1fr;
-        gap: 2.5rem;
+        gap: 3rem;
     }
 
     .community-grid {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 
     .contact-grid {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 
     .social-links {
@@ -435,7 +455,7 @@ a {
 @media (max-width: 480px) {
     .hero-links {
         flex-direction: column;
-        gap: 1rem;
+        gap: 1.25rem;
     }
 
     .logos-grid {
