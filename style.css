@@ -411,23 +411,89 @@ a {
     font-weight: 300;
 }
 
-/* Community Section */
-.community-section {
-    padding-top: 3rem;
-    border-top: 1px solid var(--medium-beige);
+/* Projects Section */
+.projects-section {
+    background-color: var(--warm-white);
 }
 
-.community-title {
+.projects-content {
+    max-width: 720px;
+}
+
+.projects-list {
+    list-style: none;
+    padding: 0;
+}
+
+.projects-list li {
     font-size: 1.05rem;
-    font-weight: 500;
     color: var(--charcoal);
+    margin-bottom: 0.8rem;
+    padding-left: 1.25rem;
+    position: relative;
+    line-height: 1.6;
+}
+
+.projects-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--warm-taupe);
+    font-weight: 300;
+}
+
+/* Influences Section */
+.influences-section {
+    background-color: var(--light-beige);
+}
+
+.influences-content {
+    max-width: 720px;
+}
+
+.influences-subtitle {
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-taupe);
     margin-bottom: 1.5rem;
+}
+
+.influences-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.8rem 2rem;
+}
+
+.influences-list li {
+    font-size: 1rem;
+    color: var(--charcoal);
+    padding-left: 1.25rem;
+    position: relative;
+    line-height: 1.6;
+}
+
+.influences-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--warm-taupe);
+    font-weight: 300;
+}
+
+/* Community Main Section */
+.community-main-section {
+    background-color: var(--warm-white);
 }
 
 .community-list {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
+    justify-content: center;
 }
 
 .community-item {
@@ -442,22 +508,27 @@ a {
     background-color: var(--medium-beige);
 }
 
+/* Personal Section */
+.personal-section {
+    background-color: var(--light-beige);
+}
+
+.personal-content {
+    max-width: 720px;
+    margin: 0 auto;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--charcoal);
+    text-align: center;
+}
+
 /* Contact Section */
 .contact-title {
     font-family: var(--font-serif);
     font-size: clamp(2.5rem, 5vw, 3.5rem);
     font-weight: 400;
     color: var(--charcoal);
-    margin-bottom: 1.5rem;
-}
-
-.contact-subtitle {
-    font-size: 1.1rem;
-    color: var(--warm-gray);
     margin-bottom: 3rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .contact-methods {
@@ -489,13 +560,22 @@ a {
 
 /* Footer */
 .footer {
-    padding: 2.5rem 3rem;
+    padding: 3rem 3rem 2.5rem;
     text-align: center;
     background-color: var(--warm-white);
     border-top: 1px solid var(--medium-beige);
 }
 
-.footer p {
+.footer .quote {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--warm-taupe);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.footer .copyright {
     font-size: 0.85rem;
     color: var(--warm-gray);
     letter-spacing: 0.05em;
@@ -551,6 +631,10 @@ a {
     .logos-grid {
         flex-direction: column;
         gap: 1rem;
+    }
+
+    .influences-list {
+        grid-template-columns: 1fr;
     }
 }
 
