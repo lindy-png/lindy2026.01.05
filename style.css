@@ -51,8 +51,74 @@ a {
     text-decoration: none;
 }
 
+/* Navigation */
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(250, 248, 245, 0.95);
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+    border-bottom: 1px solid var(--medium-beige);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    letter-spacing: 0.02em;
+    transition: var(--transition);
+}
+
+.logo:hover {
+    color: var(--warm-taupe);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.nav-links a {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--warm-gray);
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: var(--warm-taupe);
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--charcoal);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
 /* Hero Section */
 .hero {
+    padding-top: 5rem;
     min-height: 92vh;
     display: flex;
     align-items: center;
@@ -114,11 +180,11 @@ a {
 /* Sections */
 .section {
     padding: 7rem 2rem;
-    background-color: var(--cream);
+    background-color: var(--warm-white);
 }
 
 .section-alt {
-    background-color: var(--warm-white);
+    background-color: var(--light-beige);
 }
 
 .container {
@@ -259,6 +325,10 @@ a {
 }
 
 /* Skills Section */
+.section.skills-section {
+    background-color: var(--warm-white);
+}
+
 .skills-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -295,6 +365,10 @@ a {
 }
 
 /* Community Section */
+.section.community-section {
+    background-color: var(--light-beige);
+}
+
 .community-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -331,6 +405,7 @@ a {
 /* Contact Section */
 .contact-section {
     padding: 7rem 2rem 5rem;
+    background-color: var(--warm-white);
 }
 
 .contact-grid {
@@ -393,7 +468,7 @@ a {
 .footer {
     padding: 2.5rem 2rem;
     text-align: center;
-    background-color: var(--warm-white);
+    background-color: var(--light-beige);
     border-top: 1px solid var(--medium-beige);
 }
 
@@ -405,9 +480,22 @@ a {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .nav-container {
+        padding: 1rem 1.5rem;
+    }
+
+    .nav-links {
+        gap: 1.75rem;
+    }
+
+    .nav-links a {
+        font-size: 0.85rem;
+    }
+
     .hero {
         min-height: 85vh;
         padding: 4rem 1.5rem;
+        padding-top: 5rem;
     }
 
     .section {
