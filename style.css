@@ -81,7 +81,7 @@ a {
 }
 
 .logo:hover {
-    color: var(--warm-taupe);
+    color: var(--charcoal);
 }
 
 .nav-links {
@@ -340,7 +340,7 @@ a {
 }
 
 .job-company a:hover {
-    color: var(--accent);
+    color: var(--charcoal);
 }
 
 .job-date {
@@ -564,8 +564,8 @@ a {
 }
 
 .contact-method:hover {
-    color: var(--warm-taupe);
-    border-bottom-color: var(--warm-taupe);
+    color: var(--charcoal);
+    border-bottom-color: var(--charcoal);
 }
 
 .contact-location {
@@ -589,6 +589,13 @@ a {
     color: var(--warm-taupe);
     margin-bottom: 2rem;
     line-height: 1.6;
+}
+
+.footer .built-by {
+    font-size: 0.9rem;
+    color: var(--warm-gray);
+    margin-bottom: 1.5rem;
+    font-weight: 400;
 }
 
 .footer .copyright {
