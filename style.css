@@ -286,14 +286,14 @@ a {
 
 .logo-name {
     font-size: 1rem;
-    color: var(--dark-gray);
+    color: var(--warm-gray);
     font-weight: 400;
     text-decoration: none;
     transition: var(--transition);
 }
 
 .logo-name:hover {
-    color: var(--charcoal);
+    color: #000;
 }
 
 .logos-note {
