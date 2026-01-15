@@ -288,6 +288,12 @@ a {
     font-size: 1rem;
     color: var(--dark-gray);
     font-weight: 400;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.logo-name:hover {
+    color: var(--charcoal);
 }
 
 .logos-note {
@@ -325,6 +331,16 @@ a {
     font-size: 0.95rem;
     color: var(--warm-taupe);
     font-weight: 400;
+}
+
+.job-company a {
+    color: var(--warm-taupe);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.job-company a:hover {
+    color: var(--accent);
 }
 
 .job-date {
