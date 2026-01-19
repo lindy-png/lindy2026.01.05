@@ -63,13 +63,11 @@ export default async function handler(req, res) {
 async function scrapeLinkedIn(profileUrl) {
     try {
         // LinkedIn scraper actor from Apify store
-        // Try different case variations
+        // Using actor ID format (hash) instead of username/actor-name
         const actorsToTry = [
+            '2SyF0bVxmgGr8IVCZ', // Actor ID from Apify console
             'dev_fusion/Linkedin-Profile-Scraper',
-            'dev_fusion/linkedin-profile-scraper',
-            'dev_fusion/linkedin-scraper',
-            'apify/linkedin-scraper',
-            'dtrungtin/linkedin-profile-scraper'
+            'dev_fusion/linkedin-profile-scraper'
         ];
         
         let lastError;
