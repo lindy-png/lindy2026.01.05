@@ -408,7 +408,18 @@
                 const results = await response.json();
                 displayResults(results);
             } catch (error) {
-                resultsDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                // Check if it's a network error (local testing)
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    resultsDiv.innerHTML = `
+                        <p class="error">
+                            This feature requires deployment to Vercel.<br>
+                            The API endpoint only works when deployed.<br>
+                            <small>Deploy to Vercel and add APIFY_API_TOKEN environment variable to test.</small>
+                        </p>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                }
             } finally {
                 button.disabled = false;
                 button.textContent = 'Compare';
