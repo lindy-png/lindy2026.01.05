@@ -62,11 +62,15 @@ export default async function handler(req, res) {
 
 async function scrapeLinkedIn(profileUrl) {
     try {
-        // Try different LinkedIn scraper actors (Apify actor names may vary)
+        // Note: LinkedIn actors require specific actor IDs from Apify store
+        // Find available actors at: https://apify.com/store?query=linkedin
+        // Common actor IDs to try (you may need to update these based on what's available):
         const actorsToTry = [
             'apify/linkedin-scraper',
             'dtrungtin/linkedin-profile-scraper',
-            'apify/linkedin-profile-scraper'
+            'apify/linkedin-profile-scraper',
+            'helenai/linkedin-profile-scraper',
+            'apify/linkedin-scraper-v2'
         ];
         
         let lastError;
@@ -86,7 +90,7 @@ async function scrapeLinkedIn(profileUrl) {
                 const profile = items[0];
                 
                 return {
-                    name: profile.fullName || profile.name || profile.firstName + ' ' + profile.lastName,
+                    name: profile.fullName || profile.name || (profile.firstName && profile.lastName ? profile.firstName + ' ' + profile.lastName : ''),
                     headline: profile.headline || profile.headlineText || '',
                     location: profile.location || profile.locationName || '',
                     skills: (profile.skills || []).map(s => s.name || s.title || s),
@@ -103,7 +107,8 @@ async function scrapeLinkedIn(profileUrl) {
             }
         }
         
-        throw new Error(`LinkedIn scraping failed: All actors failed. Last error: ${lastError?.message || 'Unknown error'}`);
+        // Provide helpful error message
+        throw new Error(`LinkedIn scraping unavailable. Please find a LinkedIn scraper actor at https://apify.com/store?query=linkedin and update the actor ID in the code. Last error: ${lastError?.message || 'No actors found'}`);
     } catch (error) {
         throw new Error(`LinkedIn scraping failed: ${error.message}`);
     }
