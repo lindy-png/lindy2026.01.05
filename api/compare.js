@@ -75,8 +75,13 @@ async function scrapeLinkedIn(profileUrl) {
             try {
                 // Try different input formats for different actors
                 let input;
-                if (actorId.includes('dev_fusion')) {
-                    // dev_fusion actor might need different input format
+                if (actorId === '2SyF0bVxmgGr8IVCZ') {
+                    // Actor ID format - try common LinkedIn input formats
+                    input = {
+                        profileUrls: [profileUrl],
+                        startUrls: [{ url: profileUrl }]
+                    };
+                } else if (actorId.includes('dev_fusion')) {
                     input = {
                         profileUrls: [profileUrl],
                         startUrls: [{ url: profileUrl }]
