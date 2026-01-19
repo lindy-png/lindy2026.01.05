@@ -86,7 +86,7 @@
         <div class="container">
             <h2 class="section-title">Experience</h2>
 
-            <div class="job">
+            <div class="job fade-in">
                 <div class="job-header">
                     <div>
                         <h3 class="job-title">Head of Sales</h3>
@@ -100,12 +100,12 @@
                     </p>
                     <div class="job-details">
                         <div class="detail-item">
-                            <span class="detail-label">2024</span>
-                            <span class="detail-value">Built healthcare vertical from zero to 500+ customers and $1M in revenue</span>
-                        </div>
-                        <div class="detail-item">
                             <span class="detail-label">2025</span>
                             <span class="detail-value">Full enterprise sales: closed 100+ customers, $3M in revenue (40% of total company revenue as company grew 650%), while growing the sales team 300%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">2024</span>
+                            <span class="detail-value">Built healthcare vertical from zero to 500+ customers and $1M in revenue</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">GTM Abilities</span>
@@ -119,7 +119,7 @@
                 </div>
             </div>
 
-            <div class="job">
+            <div class="job fade-in">
                 <div class="job-header">
                     <div>
                         <h3 class="job-title">Account Executive & Sales Lead</h3>
@@ -134,7 +134,7 @@
                 </div>
             </div>
 
-            <div class="job">
+            <div class="job fade-in">
                 <div class="job-header">
                     <div>
                         <h3 class="job-title">Enterprise Account Executive</h3>
@@ -149,7 +149,7 @@
                 </div>
             </div>
 
-            <div class="job">
+            <div class="job fade-in">
                 <div class="job-header">
                     <div>
                         <h3 class="job-title">Master Trainer, Sales and Mentor</h3>
@@ -281,5 +281,73 @@
         <p class="built-by">Shamelessly built by Lindy and Claude Code, one of many AI projects and side quests.</p>
         <p class="copyright">© 2026 Lindy Drope</p>
     </footer>
+
+    <script>
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.job, .fade-in, .slide-in-left, .slide-in-right, .section-title, .about-content p').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Observe skill list items with staggered delay
+        const skillItems = document.querySelectorAll('.skill-list li');
+        skillItems.forEach((item, index) => {
+            observer.observe(item);
+            item.style.transitionDelay = `${index * 0.05}s`;
+        });
+
+        // Navbar scroll effect
+        let lastScroll = 0;
+        const nav = document.querySelector('.nav');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // Smooth reveal for hero stats
+        const heroStats = document.querySelectorAll('.hero-stat');
+        heroStats.forEach((stat, index) => {
+            stat.style.animation = `fadeInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${0.6 + index * 0.15}s both`;
+        });
+
+        // Smooth reveal for hero links
+        const heroLinks = document.querySelectorAll('.hero-links .link');
+        heroLinks.forEach((link, index) => {
+            link.style.animation = `fadeInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${1.2 + index * 0.1}s both`;
+        });
+
+        // Subtle parallax effect for hero
+        const hero = document.querySelector('.hero');
+        const heroContent = document.querySelector('.hero-content');
+        
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            if (scrolled < window.innerHeight) {
+                heroContent.style.transform = `translateY(${scrolled * 0.3}px)`;
+                heroContent.style.opacity = 1 - (scrolled / window.innerHeight) * 0.5;
+            }
+        });
+    </script>
 </body>
 </html>
