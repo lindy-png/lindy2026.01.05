@@ -62,15 +62,11 @@ export default async function handler(req, res) {
 
 async function scrapeLinkedIn(profileUrl) {
     try {
-        // Note: LinkedIn actors require specific actor IDs from Apify store
-        // Find available actors at: https://apify.com/store?query=linkedin
-        // Common actor IDs to try (you may need to update these based on what's available):
+        // LinkedIn scraper actor from Apify store
         const actorsToTry = [
+            'dev_fusion/Linkedin-Profile-Scraper',
             'apify/linkedin-scraper',
-            'dtrungtin/linkedin-profile-scraper',
-            'apify/linkedin-profile-scraper',
-            'helenai/linkedin-profile-scraper',
-            'apify/linkedin-scraper-v2'
+            'dtrungtin/linkedin-profile-scraper'
         ];
         
         let lastError;
