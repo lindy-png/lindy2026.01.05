@@ -6,16 +6,16 @@
 }
 
 :root {
-    /* Luxury Color Palette - Dior/West Elm inspired */
-    --ivory: #FDFCFB;
+    /* Original warm color palette */
     --cream: #FAF8F5;
-    --stone: #F5F3F0;
-    --warm-gray: #E8E6E3;
-    --taupe: #D4CFC7;
-    --charcoal: #1A1A1A;
-    --black: #000000;
-    --gold: #C9A961;
-    --gold-light: #E5D4A8;
+    --warm-white: #F5F1EB;
+    --light-beige: #EDE8E0;
+    --medium-beige: #DDD6CB;
+    --warm-taupe: #B5A89A;
+    --warm-gray: #8B8179;
+    --dark-gray: #4A4644;
+    --charcoal: #2B2825;
+    --accent: #C9A980;
     
     --font-serif: 'Cormorant Garamond', Georgia, serif;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -31,15 +31,15 @@ body {
     font-size: 17px;
     line-height: 1.7;
     color: var(--charcoal);
-    background-color: var(--ivory);
+    background-color: var(--cream);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
 }
 
 ::selection {
-    background-color: var(--charcoal);
-    color: var(--ivory);
+    background-color: var(--light-beige);
+    color: var(--charcoal);
 }
 
 /* Typography */
@@ -60,11 +60,11 @@ a {
     top: 0;
     left: 0;
     right: 0;
-    background-color: rgba(253, 252, 251, 0.85);
+    background-color: rgba(250, 248, 245, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 1000;
-    border-bottom: 1px solid var(--warm-gray);
+    border-bottom: 1px solid var(--medium-beige);
     transition: var(--transition);
 }
 
@@ -94,7 +94,7 @@ a {
 .nav-links a {
     font-size: 0.85rem;
     font-weight: 400;
-    color: var(--charcoal);
+    color: var(--warm-gray);
     letter-spacing: 0.05em;
     text-transform: uppercase;
     transition: var(--transition);
@@ -109,8 +109,12 @@ a {
     left: 0;
     width: 0;
     height: 1px;
-    background-color: var(--charcoal);
+    background-color: var(--warm-taupe);
     transition: width 0.4s ease;
+}
+
+.nav-links a:hover {
+    color: var(--charcoal);
 }
 
 .nav-links a:hover::after {
@@ -126,7 +130,7 @@ a {
     justify-content: center;
     padding: 12rem 4rem 8rem;
     overflow: hidden;
-    background: var(--ivory);
+    background: var(--cream);
 }
 
 .hero-background {
@@ -135,8 +139,44 @@ a {
     left: 0;
     right: 0;
     bottom: 0;
-    background: var(--ivory);
-    opacity: 1;
+    background: linear-gradient(135deg, var(--cream) 0%, var(--warm-white) 50%, var(--light-beige) 100%);
+    opacity: 0.8;
+}
+
+.hero-background::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(201, 169, 128, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 20s ease-in-out infinite;
+}
+
+.hero-background::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(181, 168, 154, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 25s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    33% {
+        transform: translate(30px, -30px) scale(1.1);
+    }
+    66% {
+        transform: translate(-20px, 20px) scale(0.9);
+    }
 }
 
 .hero-content {
@@ -176,8 +216,8 @@ a {
     gap: 5rem;
     margin-bottom: 4rem;
     padding: 3rem 0;
-    border-top: 1px solid var(--warm-gray);
-    border-bottom: 1px solid var(--warm-gray);
+    border-top: 1px solid var(--medium-beige);
+    border-bottom: 1px solid var(--medium-beige);
 }
 
 .hero-stat {
@@ -191,9 +231,14 @@ a {
     font-family: var(--font-serif);
     font-size: 3rem;
     font-weight: 300;
-    color: var(--charcoal);
+    color: var(--accent);
     line-height: 1;
     letter-spacing: -0.02em;
+    transition: transform 0.3s ease;
+}
+
+.hero-stat:hover .stat-value {
+    transform: scale(1.05);
 }
 
 .hero-stat .stat-label {
@@ -233,35 +278,35 @@ a {
 }
 
 .about-section {
-    background-color: var(--ivory);
+    background-color: var(--warm-white);
 }
 
 .work-section {
-    background-color: var(--stone);
+    background-color: var(--light-beige);
 }
 
 .skills-section {
-    background-color: var(--ivory);
+    background-color: var(--warm-white);
 }
 
 .projects-section {
-    background-color: var(--stone);
+    background-color: var(--warm-white);
 }
 
 .influences-section {
-    background-color: var(--ivory);
+    background-color: var(--light-beige);
 }
 
 .community-main-section {
-    background-color: var(--stone);
+    background-color: var(--warm-white);
 }
 
 .personal-section {
-    background-color: var(--ivory);
+    background-color: var(--light-beige);
 }
 
 .contact-section {
-    background-color: var(--stone);
+    background-color: var(--light-beige);
     text-align: center;
 }
 
@@ -275,10 +320,9 @@ a {
     font-weight: 400;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--charcoal);
+    color: var(--warm-taupe);
     margin-bottom: 5rem;
     text-align: center;
-    opacity: 0.5;
 }
 
 /* About Section */
@@ -299,7 +343,7 @@ a {
 .logos {
     margin-top: 6rem;
     padding-top: 4rem;
-    border-top: 1px solid var(--warm-gray);
+    border-top: 1px solid var(--medium-beige);
 }
 
 .logos-title {
@@ -307,9 +351,8 @@ a {
     font-weight: 400;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--charcoal);
+    color: var(--warm-taupe);
     margin-bottom: 2.5rem;
-    opacity: 0.5;
 }
 
 .logos-grid {
@@ -322,27 +365,35 @@ a {
 
 .logo-name {
     font-size: 1rem;
-    color: var(--charcoal);
-    font-weight: 300;
+    color: var(--warm-gray);
+    font-weight: 400;
     text-decoration: none;
     transition: var(--transition);
     letter-spacing: -0.01em;
     position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    display: inline-block;
 }
 
-.logo-name::after {
+.logo-name::before {
     content: '';
     position: absolute;
     left: 0;
-    bottom: -2px;
+    bottom: 0.3rem;
     width: 0;
     height: 1px;
-    background-color: var(--charcoal);
-    transition: width 0.4s ease;
+    background-color: var(--accent);
+    transition: width 0.3s ease;
 }
 
-.logo-name:hover::after {
-    width: 100%;
+.logo-name:hover {
+    color: var(--charcoal);
+    background-color: rgba(201, 169, 128, 0.1);
+}
+
+.logo-name:hover::before {
+    width: calc(100% - 2rem);
 }
 
 .logos-note {
@@ -358,6 +409,47 @@ a {
 /* Work Section */
 .work-section {
     position: relative;
+}
+
+.work-section::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--medium-beige) 0%, transparent 100%);
+    transform: translateX(-50%);
+    opacity: 0.3;
+}
+
+.job {
+    position: relative;
+    padding-left: 2rem;
+    transition: transform 0.3s ease, padding-left 0.3s ease;
+}
+
+.job::before {
+    content: '';
+    position: absolute;
+    left: -0.5rem;
+    top: 0.5rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    border: 3px solid var(--warm-white);
+    box-shadow: 0 0 0 2px var(--medium-beige);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.job:hover {
+    transform: translateX(10px);
+}
+
+.job:hover::before {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 3px var(--accent);
 }
 
 .job {
@@ -386,32 +478,26 @@ a {
 }
 
 .job-company {
-    font-size: 1rem;
-    color: var(--charcoal);
-    font-weight: 300;
-    opacity: 0.7;
+    font-size: 0.95rem;
+    color: var(--warm-taupe);
+    font-weight: 400;
 }
 
 .job-company a {
-    color: var(--charcoal);
+    color: var(--warm-taupe);
     text-decoration: none;
     transition: var(--transition);
-    border-bottom: 1px solid transparent;
 }
 
 .job-company a:hover {
-    opacity: 1;
-    border-bottom-color: var(--charcoal);
+    color: var(--charcoal);
 }
 
 .job-date {
-    font-size: 0.85rem;
-    color: var(--charcoal);
+    font-size: 0.9rem;
+    color: var(--warm-gray);
     white-space: nowrap;
-    opacity: 0.5;
-    font-weight: 300;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    font-weight: 400;
 }
 
 .job-content {
@@ -432,8 +518,17 @@ a {
     flex-direction: column;
     gap: 2rem;
     padding: 2.5rem;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-left: 1px solid var(--warm-gray);
+    background-color: rgba(255, 255, 255, 0.6);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.job-details:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transform: translateX(5px);
 }
 
 .detail-item {
@@ -443,20 +538,18 @@ a {
 }
 
 .detail-label {
-    font-size: 0.7rem;
-    font-weight: 400;
-    letter-spacing: 0.15em;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--charcoal);
-    opacity: 0.5;
+    color: var(--warm-taupe);
 }
 
 .detail-value {
-    font-size: 1rem;
-    line-height: 1.7;
-    color: var(--charcoal);
-    font-weight: 300;
-    letter-spacing: -0.01em;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--dark-gray);
+    font-weight: 400;
 }
 
 /* Skills Section */
@@ -495,8 +588,7 @@ a {
     content: '—';
     position: absolute;
     left: 0;
-    color: var(--charcoal);
-    opacity: 0.3;
+    color: var(--warm-taupe);
     font-weight: 300;
 }
 
@@ -538,13 +630,12 @@ a {
 }
 
 .influences-subtitle {
-    font-size: 0.75rem;
-    font-weight: 400;
-    letter-spacing: 0.2em;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--charcoal);
+    color: var(--warm-taupe);
     margin-bottom: 2rem;
-    opacity: 0.5;
 }
 
 .influences-list {
@@ -583,20 +674,39 @@ a {
 }
 
 .community-item {
-    padding: 0.75rem 1.5rem;
-    background-color: transparent;
-    color: var(--charcoal);
+    padding: 0.6rem 1.2rem;
+    background-color: var(--light-beige);
+    color: var(--dark-gray);
     font-size: 0.9rem;
     transition: var(--transition);
-    border: 1px solid var(--warm-gray);
-    font-weight: 300;
-    letter-spacing: -0.01em;
+    border-radius: 20px;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+}
+
+.community-item::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: rgba(201, 169, 128, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+}
+
+.community-item:hover::before {
+    width: 200px;
+    height: 200px;
 }
 
 .community-item:hover {
-    border-color: var(--charcoal);
-    background-color: var(--charcoal);
-    color: var(--ivory);
+    background-color: var(--medium-beige);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Personal Section */
@@ -657,41 +767,34 @@ a {
 .footer {
     padding: 5rem 4rem 3rem;
     text-align: center;
-    background-color: var(--ivory);
-    border-top: 1px solid var(--warm-gray);
+    background-color: var(--warm-white);
+    border-top: 1px solid var(--medium-beige);
 }
 
 .footer .quote {
     font-family: var(--font-serif);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-style: italic;
-    color: var(--charcoal);
-    margin-bottom: 3rem;
+    color: var(--warm-taupe);
+    margin-bottom: 2rem;
     line-height: 1.6;
-    font-weight: 300;
-    opacity: 0.7;
+    font-weight: 400;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    letter-spacing: -0.01em;
 }
 
 .footer .built-by {
-    font-size: 0.85rem;
-    color: var(--charcoal);
-    margin-bottom: 2rem;
-    font-weight: 300;
-    opacity: 0.5;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    font-size: 0.9rem;
+    color: var(--warm-gray);
+    margin-bottom: 1.5rem;
+    font-weight: 400;
 }
 
 .footer .copyright {
-    font-size: 0.75rem;
-    color: var(--charcoal);
-    letter-spacing: 0.1em;
-    opacity: 0.4;
-    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: var(--warm-gray);
+    letter-spacing: 0.05em;
 }
 
 /* Responsive */
@@ -723,6 +826,18 @@ a {
 
     .container {
         max-width: 100%;
+    }
+
+    .work-section::before {
+        left: 1rem;
+    }
+
+    .job {
+        padding-left: 3rem;
+    }
+
+    .job::before {
+        left: 0.5rem;
     }
 
     .job-header {
