@@ -9,7 +9,8 @@
     "build": "echo 'No build step needed for static site'"
   },
   "dependencies": {
-    "apify-client": "^2.8.0"
+    "apify-client": "^2.8.0",
+    "@anthropic-ai/sdk": "^0.24.0"
   },
   "devDependencies": {},
   "engines": {
