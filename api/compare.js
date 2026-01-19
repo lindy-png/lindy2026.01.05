@@ -62,39 +62,48 @@ export default async function handler(req, res) {
 
 async function scrapeLinkedIn(profileUrl) {
     try {
-        // Use Apify LinkedIn Profile Scraper
-        const input = {
-            profileUrls: [profileUrl],
-            extendOutputFunction: `async ({ data, page, request }) => {
-                return {
-                    ...data,
-                    skills: data.skills?.map(s => s.name || s) || [],
-                    experiences: data.experiences?.map(e => ({
-                        company: e.companyName || e.company,
-                        title: e.title
-                    })) || []
+        // Try different LinkedIn scraper actors (Apify actor names may vary)
+        const actorsToTry = [
+            'apify/linkedin-scraper',
+            'dtrungtin/linkedin-profile-scraper',
+            'apify/linkedin-profile-scraper'
+        ];
+        
+        let lastError;
+        for (const actorId of actorsToTry) {
+            try {
+                const input = {
+                    profileUrls: [profileUrl]
                 };
-            }`
-        };
-        
-        const run = await client.actor('apify/linkedin-profile-scraper').call(input);
-        const { items } = await client.dataset(run.defaultDatasetId).listItems();
-        
-        if (items.length === 0) {
-            throw new Error('Profile not found or could not be scraped');
+                
+                const run = await client.actor(actorId).call(input);
+                const { items } = await client.dataset(run.defaultDatasetId).listItems();
+                
+                if (items.length === 0) {
+                    continue; // Try next actor
+                }
+                
+                const profile = items[0];
+                
+                return {
+                    name: profile.fullName || profile.name || profile.firstName + ' ' + profile.lastName,
+                    headline: profile.headline || profile.headlineText || '',
+                    location: profile.location || profile.locationName || '',
+                    skills: (profile.skills || []).map(s => s.name || s.title || s),
+                    experiences: (profile.experiences || profile.positions || []).map(e => ({
+                        company: e.companyName || e.company || '',
+                        title: e.title || e.positionTitle || ''
+                    })),
+                    education: profile.education || [],
+                    summary: profile.summary || profile.about || ''
+                };
+            } catch (error) {
+                lastError = error;
+                continue; // Try next actor
+            }
         }
         
-        const profile = items[0];
-        
-        return {
-            name: profile.fullName || profile.name,
-            headline: profile.headline,
-            location: profile.location,
-            skills: profile.skills || [],
-            experiences: profile.experiences || [],
-            education: profile.education || [],
-            summary: profile.summary || ''
-        };
+        throw new Error(`LinkedIn scraping failed: All actors failed. Last error: ${lastError?.message || 'Unknown error'}`);
     } catch (error) {
         throw new Error(`LinkedIn scraping failed: ${error.message}`);
     }
