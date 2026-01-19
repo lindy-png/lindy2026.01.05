@@ -75,9 +75,19 @@ async function scrapeLinkedIn(profileUrl) {
         let lastError;
         for (const actorId of actorsToTry) {
             try {
-                const input = {
-                    profileUrls: [profileUrl]
-                };
+                // Try different input formats for different actors
+                let input;
+                if (actorId.includes('dev_fusion')) {
+                    // dev_fusion actor might need different input format
+                    input = {
+                        profileUrls: [profileUrl],
+                        startUrls: [{ url: profileUrl }]
+                    };
+                } else {
+                    input = {
+                        profileUrls: [profileUrl]
+                    };
+                }
                 
                 const run = await client.actor(actorId).call(input);
                 const { items } = await client.dataset(run.defaultDatasetId).listItems();
