@@ -360,6 +360,127 @@ a {
     background-color: #FEFEFE;
 }
 
+.compare-section {
+    background-color: var(--warm-white);
+}
+
+.compare-form {
+    display: flex;
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+.profile-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--medium-beige);
+    background-color: #FEFEFE;
+    color: var(--dark-gray);
+    border-radius: 2px;
+    transition: var(--transition-fast);
+    font-family: var(--font-sans);
+}
+
+.profile-input:focus {
+    outline: none;
+    border-color: var(--warm-taupe);
+}
+
+.compare-button {
+    padding: 0.75rem 2rem;
+    background-color: var(--dark-gray);
+    color: #FEFEFE;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    border-radius: 2px;
+    font-family: var(--font-sans);
+}
+
+.compare-button:hover:not(:disabled) {
+    background-color: var(--warm-taupe);
+    transform: translateY(-2px);
+}
+
+.compare-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.comparison-results {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.comparison-content {
+    display: grid;
+    gap: 3rem;
+}
+
+.comparison-content h3 {
+    font-size: 1.2rem;
+    color: var(--dark-gray);
+    margin-bottom: 1rem;
+}
+
+.comparison-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.comparison-content li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--medium-beige);
+    color: var(--dark-gray);
+    line-height: 1.6;
+}
+
+.comparison-content li:last-child {
+    border-bottom: none;
+}
+
+.communalities {
+    padding: 2rem;
+    background-color: rgba(212, 196, 176, 0.1);
+    border-left: 3px solid var(--accent);
+}
+
+.differences {
+    padding: 2rem;
+    background-color: rgba(196, 189, 181, 0.1);
+    border-left: 3px solid var(--warm-taupe);
+}
+
+.profile-summary {
+    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+}
+
+.profile-summary p {
+    margin-bottom: 0.5rem;
+    color: var(--dark-gray);
+}
+
+.loading, .error {
+    text-align: center;
+    padding: 2rem;
+    color: var(--dark-gray);
+}
+
+.loading-subtitle {
+    font-size: 0.9rem;
+    color: var(--warm-gray);
+    margin-top: 0.5rem;
+}
+
+.error {
+    color: #c44;
+}
+
 .contact-section {
     background-color: var(--warm-white);
     text-align: center;

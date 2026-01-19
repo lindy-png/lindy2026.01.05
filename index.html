@@ -268,6 +268,23 @@
         </div>
     </section>
 
+    <!-- Compare Section -->
+    <section class="section compare-section">
+        <div class="container">
+            <h2 class="section-title">Find Common Ground</h2>
+            <div class="compare-form">
+                <input 
+                    type="text" 
+                    id="profile-url" 
+                    class="profile-input"
+                    placeholder="Enter your LinkedIn or Twitter URL" 
+                />
+                <button onclick="compareProfiles()" class="compare-button">Compare</button>
+            </div>
+            <div id="comparison-results" class="comparison-results"></div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="section contact-section">
         <div class="container">
@@ -354,6 +371,87 @@
                 heroContent.style.opacity = 1 - (scrolled / window.innerHeight) * 0.5;
             }
         });
+
+        // Profile Comparison Function
+        async function compareProfiles() {
+            const url = document.getElementById('profile-url').value;
+            const resultsDiv = document.getElementById('comparison-results');
+            const button = document.querySelector('.compare-button');
+            
+            if (!url) {
+                resultsDiv.innerHTML = '<p class="error">Please enter a URL</p>';
+                return;
+            }
+            
+            // Show loading state
+            button.disabled = true;
+            button.textContent = 'Researching...';
+            resultsDiv.innerHTML = `
+                <div class="loading">
+                    <p>Researching profile...</p>
+                    <p class="loading-subtitle">This may take 30-60 seconds</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/api/compare', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to compare profiles');
+                }
+                
+                const results = await response.json();
+                displayResults(results);
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Compare';
+            }
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('comparison-results');
+            
+            let html = '<div class="comparison-content">';
+            
+            if (results.profileData) {
+                html += '<div class="profile-summary"><h3>Profile Summary</h3>';
+                if (results.profileData.name) html += `<p><strong>Name:</strong> ${results.profileData.name}</p>`;
+                if (results.profileData.headline) html += `<p><strong>Headline:</strong> ${results.profileData.headline}</p>`;
+                if (results.profileData.location) html += `<p><strong>Location:</strong> ${results.profileData.location}</p>`;
+                html += '</div>';
+            }
+            
+            if (results.commonalities && results.commonalities.length > 0) {
+                html += '<div class="commonalities"><h3>✨ Commonalities</h3><ul>';
+                results.commonalities.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                html += '</ul></div>';
+            }
+            
+            if (results.differences && results.differences.length > 0) {
+                html += '<div class="differences"><h3>💡 Interesting Differences</h3><ul>';
+                results.differences.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                html += '</ul></div>';
+            }
+            
+            if ((!results.commonalities || results.commonalities.length === 0) && 
+                (!results.differences || results.differences.length === 0)) {
+                html += '<p>No significant matches found. Try a LinkedIn profile for better results!</p>';
+            }
+            
+            html += '</div>';
+            resultsDiv.innerHTML = html;
+        }
     </script>
 </body>
 </html>
