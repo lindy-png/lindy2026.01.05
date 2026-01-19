@@ -49,8 +49,8 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Please provide a LinkedIn or Twitter URL' });
         }
         
-        // Compare profiles
-        const comparison = compareProfiles(profileData, lindyProfile);
+        // Compare profiles using LLM
+        const comparison = await compareProfiles(profileData, lindyProfile);
         
         res.json({
             profileData: {
