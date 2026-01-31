@@ -54,21 +54,50 @@ export default async function handler(req, res) {
         // Determine if LinkedIn or Twitter
         if (url.includes('linkedin.com')) {
             console.log('Scraping LinkedIn profile:', url);
-            profileData = await scrapeLinkedIn(url);
-            console.log('LinkedIn profile scraped:', profileData.name || 'Unknown');
+            try {
+                profileData = await scrapeLinkedIn(url);
+                console.log('LinkedIn profile scraped successfully:', profileData.name || 'Unknown');
+            } catch (scrapeError) {
+                console.error('LinkedIn scraping failed:', scrapeError.message);
+                // Even if scraping fails, try to extract basic info from URL and proceed
+                const username = url.match(/linkedin\.com\/in\/([^\/\?]+)/)?.[1];
+                profileData = {
+                    name: username || 'Unknown',
+                    headline: '',
+                    location: '',
+                    skills: [],
+                    experiences: [],
+                    summary: `LinkedIn profile: ${url}`
+                };
+                console.log('Using fallback profile data due to scraping error');
+            }
         } else if (url.includes('twitter.com') || url.includes('x.com')) {
             console.log('Scraping Twitter profile:', url);
-            profileData = await scrapeTwitter(url);
-            console.log('Twitter profile scraped:', profileData.name || 'Unknown');
+            try {
+                profileData = await scrapeTwitter(url);
+                console.log('Twitter profile scraped successfully:', profileData.name || 'Unknown');
+            } catch (scrapeError) {
+                console.error('Twitter scraping failed:', scrapeError.message);
+                // Even if scraping fails, try to extract basic info from URL and proceed
+                const username = url.match(/(?:twitter\.com\/|x\.com\/)([^\/\?]+)/)?.[1];
+                profileData = {
+                    name: username || 'Unknown',
+                    headline: '',
+                    location: '',
+                    tweets: `Twitter profile: ${url}`
+                };
+                console.log('Using fallback profile data due to scraping error');
+            }
         } else {
             return res.status(400).json({ error: 'Please provide a LinkedIn or Twitter URL' });
         }
         
-        // Compare profiles using LLM
-        console.log('Comparing profiles with Anthropic...');
+        // Compare profiles using LLM - ALWAYS call this even if scraping had issues
+        console.log('Calling Anthropic API to compare profiles...');
         console.log('User profile data:', JSON.stringify(profileData, null, 2));
+        
         const comparison = await compareProfiles(profileData, lindyProfile);
-        console.log('Comparison complete:', comparison.points?.length || 0, 'points found');
+        console.log('Anthropic comparison complete:', comparison.points?.length || 0, 'points found');
         console.log('Comparison result:', JSON.stringify(comparison, null, 2));
         
         // Ensure we always return points
@@ -82,7 +111,8 @@ export default async function handler(req, res) {
         });
     } catch (error) {
         console.error('Error in compare handler:', error);
-        res.status(500).json({ error: error.message || 'Failed to scrape profile' });
+        console.error('Error stack:', error.stack);
+        res.status(500).json({ error: error.message || 'Failed to process profile comparison' });
     }
 }
 
@@ -191,6 +221,10 @@ async function scrapeTwitter(profileUrl) {
 
 async function compareProfiles(userProfile, lindyProfile) {
     try {
+        console.log('=== STARTING ANTHROPIC API CALL ===');
+        console.log('Anthropic API Key present:', !!process.env.ANTHROPIC_API_KEY);
+        console.log('Anthropic API Key length:', process.env.ANTHROPIC_API_KEY?.length || 0);
+        
         // Validate we have some profile data
         if (!userProfile || (!userProfile.name && !userProfile.headline && !userProfile.summary)) {
             console.error('Invalid user profile data:', userProfile);
@@ -242,6 +276,7 @@ Format your response as JSON with a single "points" array containing exactly 3-4
 
 Each point should be a complete, standalone sentence that's insightful and specific.`;
 
+        console.log('Calling anthropic.messages.create...');
         const message = await anthropic.messages.create({
             model: 'claude-3-5-sonnet-20241022',
             max_tokens: 1000,
@@ -250,6 +285,7 @@ Each point should be a complete, standalone sentence that's insightful and speci
                 content: prompt
             }]
         });
+        console.log('Anthropic API call successful! Response received.');
 
         // Parse LLM response
         const responseText = message.content[0].text;
