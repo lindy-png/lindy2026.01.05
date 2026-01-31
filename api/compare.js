@@ -26,6 +26,66 @@ const lindyProfile = {
     companies: ['Lindy', 'Teamflow', 'Cintas']
 };
 
+// Fallback comparison generator when LLM fails
+function generateFallbackComparison(userProfile, lindyProfile) {
+    const points = [];
+    
+    // Check for location match
+    if (userProfile.location && userProfile.location.toLowerCase().includes('san francisco')) {
+        points.push('Both based in San Francisco - great opportunity to connect locally!');
+    }
+    
+    // Check for industry/skills overlap
+    const userSkills = (userProfile.skills || []).map(s => s.toLowerCase());
+    const lindySkills = lindyProfile.skills.map(s => s.toLowerCase());
+    const commonSkills = userSkills.filter(skill => 
+        lindySkills.some(lindySkill => lindySkill.includes(skill) || skill.includes(lindySkill))
+    );
+    
+    if (commonSkills.length > 0) {
+        points.push(`Shared expertise in ${commonSkills[0]} - potential for great collaboration!`);
+    }
+    
+    // Check for sales/GTM experience
+    const hasSalesExperience = userProfile.headline?.toLowerCase().includes('sales') ||
+                               userProfile.headline?.toLowerCase().includes('gtm') ||
+                               userProfile.headline?.toLowerCase().includes('revenue') ||
+                               userProfile.experiences?.some(e => 
+                                   e.title?.toLowerCase().includes('sales') ||
+                                   e.title?.toLowerCase().includes('account')
+                               );
+    
+    if (hasSalesExperience) {
+        points.push('Both have sales and GTM experience - could share insights on building revenue engines');
+    }
+    
+    // Check for AI/tech overlap
+    const hasAITech = userProfile.headline?.toLowerCase().includes('ai') ||
+                      userProfile.headline?.toLowerCase().includes('saas') ||
+                      userProfile.headline?.toLowerCase().includes('tech') ||
+                      userSkills.some(s => s.includes('ai') || s.includes('machine learning'));
+    
+    if (hasAITech) {
+        points.push('Both working in AI/tech - exciting space to be building in!');
+    }
+    
+    // If we have at least some profile data, add a generic connection
+    if (userProfile.name && userProfile.name !== 'Unknown') {
+        if (points.length === 0) {
+            points.push('Looking forward to learning more about your background and finding common ground!');
+        }
+    }
+    
+    // Ensure we have at least 2-3 points
+    while (points.length < 2) {
+        points.push('Excited to explore potential connections and shared interests!');
+    }
+    
+    return {
+        points: points.slice(0, 4)
+    };
+}
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
@@ -96,14 +156,26 @@ export default async function handler(req, res) {
         console.log('Calling Anthropic API to compare profiles...');
         console.log('User profile data:', JSON.stringify(profileData, null, 2));
         
-        const comparison = await compareProfiles(profileData, lindyProfile);
-        console.log('Anthropic comparison complete:', comparison.points?.length || 0, 'points found');
-        console.log('Comparison result:', JSON.stringify(comparison, null, 2));
+        let comparison;
+        try {
+            comparison = await compareProfiles(profileData, lindyProfile);
+            console.log('Anthropic comparison complete:', comparison.points?.length || 0, 'points found');
+            console.log('Comparison result:', JSON.stringify(comparison, null, 2));
+        } catch (llmError) {
+            console.error('Anthropic API call failed:', llmError.message);
+            console.error('LLM Error stack:', llmError.stack);
+            
+            // Generate fallback comparison based on profile data
+            comparison = generateFallbackComparison(profileData, lindyProfile);
+            console.log('Using fallback comparison:', comparison.points?.length || 0, 'points');
+        }
         
         // Ensure we always return points
-        if (!comparison.points || comparison.points.length === 0) {
+        if (!comparison || !comparison.points || comparison.points.length === 0) {
             console.error('WARNING: No points in comparison result!');
-            comparison.points = ['Unable to generate comparison at this time. Please try again.'];
+            comparison = {
+                points: ['Unable to generate comparison at this time. Please try again.']
+            };
         }
         
         res.json({
@@ -112,7 +184,19 @@ export default async function handler(req, res) {
     } catch (error) {
         console.error('Error in compare handler:', error);
         console.error('Error stack:', error.stack);
-        res.status(500).json({ error: error.message || 'Failed to process profile comparison' });
+        
+        // Try to return a basic fallback response instead of error
+        try {
+            const fallback = generateFallbackComparison({ name: 'Unknown' }, lindyProfile);
+            res.json({
+                points: fallback.points || ['Unable to process comparison. Please try again.']
+            });
+        } catch (fallbackError) {
+            res.status(500).json({ 
+                error: error.message || 'Failed to process profile comparison',
+                points: ['Unable to process comparison. Please try again.']
+            });
+        }
     }
 }
 
