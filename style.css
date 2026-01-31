@@ -361,10 +361,7 @@ a {
 }
 
 .chatbot-section {
-    background-color: var(--warm-white);
-}
-
-.chatbot-section {
+    display: none; /* Hidden until feature is working */
     background-color: var(--warm-white);
 }
 
