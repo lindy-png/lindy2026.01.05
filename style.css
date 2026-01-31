@@ -865,6 +865,12 @@ a {
     gap: 0.8rem;
 }
 
+.influences-list.books-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem 2rem;
+}
+
 .influences-list li {
     font-size: 1rem;
     color: var(--dark-gray);
@@ -1071,7 +1077,7 @@ a {
         gap: 1rem;
     }
 
-    .influences-list {
+    .influences-list.books-list {
         grid-template-columns: 1fr;
     }
 }
