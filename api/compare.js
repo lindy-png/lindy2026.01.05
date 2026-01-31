@@ -118,72 +118,112 @@ export default async function handler(req, res) {
 
 async function scrapeLinkedIn(profileUrl) {
     try {
-        // LinkedIn scraper actor from Apify store
-        // Using actor ID format (hash) instead of username/actor-name
+        console.log('Starting LinkedIn scrape for:', profileUrl);
+        
+        // Try multiple LinkedIn actors with different input formats
         const actorsToTry = [
-            '2SyF0bVxmgGr8IVCZ', // Actor ID from Apify console
-            'dev_fusion/Linkedin-Profile-Scraper',
-            'dev_fusion/linkedin-profile-scraper'
+            {
+                id: '2SyF0bVxmgGr8IVCZ',
+                input: { startUrls: [{ url: profileUrl }] }
+            },
+            {
+                id: 'dev_fusion/Linkedin-Profile-Scraper',
+                input: { profileUrls: [profileUrl] }
+            },
+            {
+                id: 'apify/linkedin-profile-scraper',
+                input: { profileUrls: [profileUrl] }
+            },
+            {
+                id: 'dtrungtin/linkedin-profile-scraper',
+                input: { profileUrls: [profileUrl] }
+            }
         ];
         
         let lastError;
-        for (const actorId of actorsToTry) {
+        for (const actorConfig of actorsToTry) {
             try {
-                // Try different input formats for different actors
-                let input;
-                if (actorId === '2SyF0bVxmgGr8IVCZ') {
-                    // Actor ID format - try common LinkedIn input formats
-                    input = {
-                        profileUrls: [profileUrl],
-                        startUrls: [{ url: profileUrl }]
-                    };
-                } else if (actorId.includes('dev_fusion')) {
-                    input = {
-                        profileUrls: [profileUrl],
-                        startUrls: [{ url: profileUrl }]
-                    };
-                } else {
-                    input = {
-                        profileUrls: [profileUrl]
-                    };
+                console.log(`Trying actor: ${actorConfig.id}`);
+                console.log('Input:', JSON.stringify(actorConfig.input, null, 2));
+                
+                // Start the actor run
+                const run = await client.actor(actorConfig.id).call(actorConfig.input);
+                console.log(`Actor ${actorConfig.id} started, run ID: ${run.id}`);
+                
+                // Wait for the run to finish (with timeout)
+                let finished = false;
+                let attempts = 0;
+                const maxAttempts = 60; // 5 minutes max (5s * 60)
+                
+                while (!finished && attempts < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+                    const runStatus = await client.run(run.id).get();
+                    console.log(`Run status (attempt ${attempts + 1}):`, runStatus.status);
+                    
+                    if (runStatus.status === 'SUCCEEDED') {
+                        finished = true;
+                    } else if (runStatus.status === 'FAILED' || runStatus.status === 'ABORTED') {
+                        throw new Error(`Actor run ${runStatus.status}: ${runStatus.statusMessage || 'Unknown error'}`);
+                    }
+                    attempts++;
                 }
                 
-                const run = await client.actor(actorId).call(input);
+                if (!finished) {
+                    throw new Error('Actor run timed out after 5 minutes');
+                }
+                
+                // Get the results
                 const { items } = await client.dataset(run.defaultDatasetId).listItems();
+                console.log(`Got ${items.length} items from actor ${actorConfig.id}`);
                 
                 if (items.length === 0) {
-                    continue; // Try next actor
+                    console.log(`No items returned from ${actorConfig.id}, trying next actor...`);
+                    continue;
                 }
                 
                 const profile = items[0];
+                console.log('Profile data received:', Object.keys(profile));
                 
-                return {
-                    name: profile.fullName || profile.name || (profile.firstName && profile.lastName ? profile.firstName + ' ' + profile.lastName : ''),
-                    headline: profile.headline || profile.headlineText || '',
-                    location: profile.location || profile.locationName || '',
-                    skills: (profile.skills || []).map(s => s.name || s.title || s),
-                    experiences: (profile.experiences || profile.positions || []).map(e => ({
-                        company: e.companyName || e.company || '',
-                        title: e.title || e.positionTitle || ''
+                // Extract profile data with multiple fallback options
+                const extractedProfile = {
+                    name: profile.fullName || profile.name || 
+                          (profile.firstName && profile.lastName ? `${profile.firstName} ${profile.lastName}` : '') ||
+                          profile.profileName || '',
+                    headline: profile.headline || profile.headlineText || profile.summary || '',
+                    location: profile.location || profile.locationName || profile.geoLocation || '',
+                    skills: (profile.skills || []).map(s => 
+                        typeof s === 'string' ? s : (s.name || s.title || s.text || s)
+                    ),
+                    experiences: (profile.experiences || profile.positions || profile.workExperience || []).map(e => ({
+                        company: e.companyName || e.company || e.companyNameLocalized || '',
+                        title: e.title || e.positionTitle || e.role || ''
                     })),
-                    education: profile.education || [],
-                    summary: profile.summary || profile.about || ''
+                    education: profile.education || profile.schools || [],
+                    summary: profile.summary || profile.about || profile.description || ''
                 };
+                
+                console.log('Successfully extracted profile:', extractedProfile.name);
+                return extractedProfile;
+                
             } catch (error) {
+                console.error(`Actor ${actorConfig.id} failed:`, error.message);
                 lastError = error;
                 continue; // Try next actor
             }
         }
         
-        // Provide helpful error message
-        throw new Error(`LinkedIn scraping unavailable. Please find a LinkedIn scraper actor at https://apify.com/store?query=linkedin and update the actor ID in the code. Last error: ${lastError?.message || 'No actors found'}`);
+        // All actors failed
+        throw new Error(`All LinkedIn scrapers failed. Last error: ${lastError?.message || 'No actors available'}. Please check your Apify account has access to LinkedIn scrapers.`);
     } catch (error) {
+        console.error('LinkedIn scraping error:', error);
         throw new Error(`LinkedIn scraping failed: ${error.message}`);
     }
 }
 
 async function scrapeTwitter(profileUrl) {
     try {
+        console.log('Starting Twitter scrape for:', profileUrl);
+        
         // Extract username from URL
         const username = profileUrl.match(/(?:twitter\.com\/|x\.com\/)([^\/\?]+)/)?.[1];
         
@@ -191,30 +231,96 @@ async function scrapeTwitter(profileUrl) {
             throw new Error('Invalid Twitter URL');
         }
         
-        // Use Apify Twitter Scraper
-        const input = {
-            startUrls: [{ url: `https://twitter.com/${username}` }],
-            maxTweets: 50,
-            addUserInfo: true
-        };
+        // Try multiple Twitter actors
+        const actorsToTry = [
+            {
+                id: 'apify/twitter-scraper',
+                input: {
+                    startUrls: [{ url: `https://twitter.com/${username}` }],
+                    maxTweets: 50,
+                    addUserInfo: true
+                }
+            },
+            {
+                id: 'quacker/twitter-scraper',
+                input: {
+                    profiles: [username],
+                    maxTweets: 50
+                }
+            }
+        ];
         
-        const run = await client.actor('apify/twitter-scraper').call(input);
-        const { items } = await client.dataset(run.defaultDatasetId).listItems();
-        
-        if (items.length === 0) {
-            throw new Error('Profile not found or could not be scraped');
+        let lastError;
+        for (const actorConfig of actorsToTry) {
+            try {
+                console.log(`Trying Twitter actor: ${actorConfig.id}`);
+                console.log('Input:', JSON.stringify(actorConfig.input, null, 2));
+                
+                // Start the actor run
+                const run = await client.actor(actorConfig.id).call(actorConfig.input);
+                console.log(`Twitter actor ${actorConfig.id} started, run ID: ${run.id}`);
+                
+                // Wait for the run to finish (with timeout)
+                let finished = false;
+                let attempts = 0;
+                const maxAttempts = 60; // 5 minutes max
+                
+                while (!finished && attempts < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+                    const runStatus = await client.run(run.id).get();
+                    console.log(`Twitter run status (attempt ${attempts + 1}):`, runStatus.status);
+                    
+                    if (runStatus.status === 'SUCCEEDED') {
+                        finished = true;
+                    } else if (runStatus.status === 'FAILED' || runStatus.status === 'ABORTED') {
+                        throw new Error(`Twitter actor run ${runStatus.status}: ${runStatus.statusMessage || 'Unknown error'}`);
+                    }
+                    attempts++;
+                }
+                
+                if (!finished) {
+                    throw new Error('Twitter actor run timed out after 5 minutes');
+                }
+                
+                // Get the results
+                const { items } = await client.dataset(run.defaultDatasetId).listItems();
+                console.log(`Got ${items.length} items from Twitter actor ${actorConfig.id}`);
+                
+                if (items.length === 0) {
+                    console.log(`No items returned from ${actorConfig.id}, trying next actor...`);
+                    continue;
+                }
+                
+                // Find user info and tweets
+                const userInfo = items.find(item => item.type === 'User' || item.user || item.isUser);
+                const tweets = items.filter(item => 
+                    item.type === 'Tweet' || 
+                    item.text || 
+                    item.fullText ||
+                    (item.retweetedStatus && item.retweetedStatus.text)
+                );
+                
+                console.log('User info found:', !!userInfo);
+                console.log('Tweets found:', tweets.length);
+                
+                return {
+                    name: userInfo?.name || userInfo?.user?.name || userInfo?.displayName || username,
+                    headline: userInfo?.bio || userInfo?.description || userInfo?.user?.description || '',
+                    location: userInfo?.location || userInfo?.user?.location || '',
+                    tweets: tweets.map(t => t.text || t.fullText || t.retweetedStatus?.text || '').filter(Boolean).join(' ')
+                };
+                
+            } catch (error) {
+                console.error(`Twitter actor ${actorConfig.id} failed:`, error.message);
+                lastError = error;
+                continue; // Try next actor
+            }
         }
         
-        const userInfo = items.find(item => item.type === 'User' || item.user);
-        const tweets = items.filter(item => item.type === 'Tweet' || item.text);
-        
-        return {
-            name: userInfo?.name || userInfo?.user?.name || username,
-            headline: userInfo?.bio || userInfo?.description || '',
-            location: userInfo?.location || '',
-            tweets: tweets.map(t => t.text || t.fullText || '').join(' ')
-        };
+        // All actors failed
+        throw new Error(`All Twitter scrapers failed. Last error: ${lastError?.message || 'No actors available'}`);
     } catch (error) {
+        console.error('Twitter scraping error:', error);
         throw new Error(`Twitter scraping failed: ${error.message}`);
     }
 }
