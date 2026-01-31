@@ -42,26 +42,27 @@ export default async function handler(req, res) {
         
         // Determine if LinkedIn or Twitter
         if (url.includes('linkedin.com')) {
+            console.log('Scraping LinkedIn profile:', url);
             profileData = await scrapeLinkedIn(url);
+            console.log('LinkedIn profile scraped:', profileData.name || 'Unknown');
         } else if (url.includes('twitter.com') || url.includes('x.com')) {
+            console.log('Scraping Twitter profile:', url);
             profileData = await scrapeTwitter(url);
+            console.log('Twitter profile scraped:', profileData.name || 'Unknown');
         } else {
             return res.status(400).json({ error: 'Please provide a LinkedIn or Twitter URL' });
         }
         
         // Compare profiles using LLM
+        console.log('Comparing profiles with Anthropic...');
         const comparison = await compareProfiles(profileData, lindyProfile);
+        console.log('Comparison complete:', comparison.points?.length || 0, 'points found');
         
         res.json({
-            profileData: {
-                name: profileData.name,
-                headline: profileData.headline,
-                location: profileData.location
-            },
             ...comparison
         });
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error in compare handler:', error);
         res.status(500).json({ error: error.message || 'Failed to scrape profile' });
     }
 }
@@ -191,7 +192,7 @@ Interests: ${lindyProfile.interests.join(', ')}
 Summary: Founding GTM hire at Lindy, an AI assistant platform. Acquired 500+ customers, built healthcare vertical from zero to $1M in revenue. Closed $4M+ in total revenue. Built and deployed 80+ AI agents.
 `;
 
-        const prompt = `You are analyzing two professional profiles to find meaningful connections and interesting differences. Be insightful, specific, and conversational.
+        const prompt = `You are analyzing two professional profiles to find meaningful connections. Be insightful, specific, and conversational.
 
 User Profile:
 ${userProfileText}
@@ -199,17 +200,20 @@ ${userProfileText}
 Lindy's Profile:
 ${lindyProfileText}
 
-Analyze these profiles and provide:
-1. **Commonalities** - Specific, meaningful connections (skills, experiences, interests, industry, location, career paths, values, etc.). Be specific - don't just say "both in tech" if you can be more precise.
-2. **Interesting Differences** - What makes each person unique or what could lead to interesting conversations.
+Analyze these profiles and provide EXACTLY 3-4 bullet points that highlight either:
+- Common ground (shared skills, experiences, interests, industry, location, career paths, values, etc.)
+- OR interesting contrasting differences that could spark conversation
 
-Format your response as JSON:
+Prioritize commonalities if they exist. If there are no clear commonalities, focus on interesting differences that show complementary perspectives or conversation starters.
+
+Be specific and actionable. Don't say "both in tech" - say "both building AI products" or "both in enterprise SaaS sales".
+
+Format your response as JSON with a single "points" array containing exactly 3-4 items:
 {
-  "commonalities": ["specific commonality 1", "specific commonality 2", ...],
-  "differences": ["interesting difference 1", "interesting difference 2", ...]
+  "points": ["bullet point 1", "bullet point 2", "bullet point 3", "bullet point 4"]
 }
 
-Be thoughtful and find genuine connections, even subtle ones. If there are no obvious commonalities, think creatively about potential shared interests, complementary skills, or conversation starters.`;
+Each point should be a complete, standalone sentence that's insightful and specific.`;
 
         const message = await anthropic.messages.create({
             model: 'claude-3-5-sonnet-20241022',
@@ -234,27 +238,45 @@ Be thoughtful and find genuine connections, even subtle ones. If there are no ob
                 throw new Error('No JSON found in response');
             }
         } catch (parseError) {
-            // Fallback: parse manually or use LLM's text
-            console.error('Failed to parse LLM JSON:', parseError);
-            // Extract commonalities and differences from text
-            const commonalitiesMatch = responseText.match(/commonalities?[:\-]?\s*\[?([^\]]+)\]?/i);
-            const differencesMatch = responseText.match(/differences?[:\-]?\s*\[?([^\]]+)\]?/i);
+            // Fallback: try to extract bullet points from text
+            console.error('Failed to parse LLM JSON:', parseError, responseText);
             
-            comparison = {
-                commonalities: commonalitiesMatch 
-                    ? commonalitiesMatch[1].split(',').map(s => s.trim().replace(/["']/g, '')).filter(s => s)
-                    : ['Analyzing profiles...'],
-                differences: differencesMatch
-                    ? differencesMatch[1].split(',').map(s => s.trim().replace(/["']/g, '')).filter(s => s)
-                    : []
-            };
+            // Look for bullet points or numbered list
+            const bulletMatches = responseText.match(/(?:^|\n)[•\-\*]\s*(.+?)(?=\n|$)/g);
+            const numberedMatches = responseText.match(/(?:^|\n)\d+[\.\)]\s*(.+?)(?=\n|$)/g);
+            
+            let points = [];
+            if (bulletMatches) {
+                points = bulletMatches.map(m => m.replace(/^[\n\s]*[•\-\*]\s*/, '').trim()).filter(p => p);
+            } else if (numberedMatches) {
+                points = numberedMatches.map(m => m.replace(/^[\n\s]*\d+[\.\)]\s*/, '').trim()).filter(p => p);
+            }
+            
+            // If we found points, use them; otherwise create fallback
+            if (points.length > 0) {
+                comparison = { points: points.slice(0, 4) }; // Limit to 4
+            } else {
+                // Try to extract from "points" array in text
+                const pointsMatch = responseText.match(/points?[:\-]?\s*\[?([^\]]+)\]?/i);
+                if (pointsMatch) {
+                    points = pointsMatch[1].split(',').map(s => s.trim().replace(/["']/g, '')).filter(s => s);
+                    comparison = { points: points.slice(0, 4) };
+                } else {
+                    throw new Error('Could not extract points from response');
+                }
+            }
+        }
+
+        // Ensure we have 3-4 points
+        let points = comparison.points || [];
+        if (points.length === 0) {
+            points = ['Unable to analyze profiles at the moment. Please try again!'];
+        } else if (points.length > 4) {
+            points = points.slice(0, 4);
         }
 
         return {
-            commonalities: comparison.commonalities.length > 0 
-                ? comparison.commonalities 
-                : ['No obvious commonalities found - but that\'s what makes connections interesting!'],
-            differences: comparison.differences || []
+            points: points
         };
     } catch (error) {
         console.error('LLM comparison error:', error);

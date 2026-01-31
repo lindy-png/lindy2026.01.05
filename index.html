@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lindy Drope</title>
-    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="Lindy" />
-    <link rel="manifest" href="/site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -36,7 +30,7 @@
             <p class="tagline">Founding team at Lindy. Leading the sales org. Building the future of work with AI.</p>
             <div class="hero-stats">
                 <div class="hero-stat">
-                    <span class="stat-value">$3.3M</span>
+                    <span class="stat-value">$3.4M</span>
                     <span class="stat-label">New ARR in 2025</span>
                 </div>
                 <div class="hero-stat">
@@ -65,7 +59,7 @@
                     I'm a founding GTM hire at Lindy, an AI assistant platform. I acquired 500+ of our first customers and built our healthcare vertical from zero to $1M in revenue. In 2025, I closed multimillion dollars in enterprise deals and closed over 100 new logos to Lindy.
                 </p>
                 <p>
-                    I've built and deployed 80+ AI agents end-to-end, including voice agents. I work across Anthropic, OpenAI, and Gemini models daily, and build with Cursor, Claude Code, Replit, and Lovable on the side.
+                    I've built and deployed 80+ AI agents end-to-end, including voice agents. I work across Anthropic, OpenAI, and Gemini models daily, and build with Cursor and Claude Code on the side.
                 </p>
                 <p>
                     Before AI, I was in enterprise sales at Cintas: 130-160% to quota, $1M+ pipeline, complex 5-10 year contracts. I led full sales cycles and managed SDR teams.
@@ -107,7 +101,7 @@
                     <div class="job-details">
                         <div class="detail-item">
                             <span class="detail-label">2025</span>
-                            <span class="detail-value">Full enterprise sales: closed 100+ customers, $3M in revenue (40% of total company revenue as company grew 650%), while growing the sales team 300%</span>
+                            <span class="detail-value">Full enterprise sales: closed 100+ customers, $3.4M in revenue (40% of total company revenue as company grew 650%), while growing the sales team 300%</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">2024</span>
@@ -216,7 +210,7 @@
             <h2 class="section-title">Projects</h2>
             <div class="projects-content">
                 <ul class="projects-list">
-                    <li>Advisory roles (stealth)</li>
+                    <li>stealth, seed, Series A</li>
                     <li>Sales and career coaching</li>
                     <li>Interview coaching and mentorship</li>
                     <li>Built: power dialer for SDRs, commission trackers, dashboards</li>
@@ -263,25 +257,38 @@
         <div class="container">
             <h2 class="section-title">Personal</h2>
             <p class="personal-content">
-                Daily sauna, west coast hiking, pilates, running. Dog mom to Molly. Dreams of custom building a home. Bachelor (and recently, Heated Rivalry) fan and obsessive podcast listener.
+                Daily sauna, biohacking, cold plunge, pilates. Dog mom to Molly. Dreams of custom building a home. Bachelor superfan and obsessive podcast listener.
             </p>
         </div>
     </section>
 
-    <!-- Compare Section -->
-    <section class="section compare-section">
+    <!-- Chatbot Section -->
+    <section class="section chatbot-section">
         <div class="container">
             <h2 class="section-title">Find Common Ground</h2>
-            <div class="compare-form">
-                <input 
-                    type="text" 
-                    id="profile-url" 
-                    class="profile-input"
-                    placeholder="Enter your LinkedIn or Twitter URL" 
-                />
-                <button onclick="compareProfiles()" class="compare-button">Compare</button>
+            <div class="chatbot-container">
+                <div class="chatbot-messages" id="chatbot-messages">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            <p>Hi! I'm here to help you find connections with Lindy. Share your LinkedIn or Twitter profile URL and I'll research and compare our profiles!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chatbot-input-container">
+                    <input 
+                        type="text" 
+                        id="chatbot-input" 
+                        class="chatbot-input"
+                        placeholder="Paste your LinkedIn or Twitter URL here..."
+                        onkeypress="handleChatbotKeyPress(event)"
+                    />
+                    <button onclick="sendChatbotMessage()" class="chatbot-send-button">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M18 2L9 11M18 2L12 18L9 11M18 2L2 8L9 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <div id="comparison-results" class="comparison-results"></div>
         </div>
     </section>
 
@@ -301,7 +308,7 @@
     <!-- Footer -->
     <footer class="footer">
         <p class="quote">"Humble in our aspirations, grateful for our success, resilient with our failures."</p>
-        <p class="built-by">Shamelessly built by Cursor and Claude Code, one of many side quests.</p>
+        <p class="built-by">Shamelessly built by Lindy and Claude Code, one of many AI projects and side quests.</p>
         <p class="copyright">© 2026 Lindy Drope</p>
     </footer>
 
@@ -372,96 +379,130 @@
             }
         });
 
-        // Profile Comparison Function
-        async function compareProfiles() {
-            const url = document.getElementById('profile-url').value;
-            const resultsDiv = document.getElementById('comparison-results');
-            const button = document.querySelector('.compare-button');
-            
-            if (!url) {
-                resultsDiv.innerHTML = '<p class="error">Please enter a URL</p>';
-                return;
-            }
-            
-            // Show loading state
-            button.disabled = true;
-            button.textContent = 'Researching...';
-            resultsDiv.innerHTML = `
-                <div class="loading">
-                    <p>Researching profile...</p>
-                    <p class="loading-subtitle">This may take 30-60 seconds</p>
-                </div>
-            `;
-            
-            try {
-                const response = await fetch('/api/compare', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url })
-                });
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Failed to compare profiles');
-                }
-                
-                const results = await response.json();
-                displayResults(results);
-            } catch (error) {
-                // Check if it's a network error (local testing)
-                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                    resultsDiv.innerHTML = `
-                        <p class="error">
-                            This feature requires deployment to Vercel.<br>
-                            The API endpoint only works when deployed.<br>
-                            <small>Deploy to Vercel and add APIFY_API_TOKEN environment variable to test.</small>
-                        </p>
-                    `;
-                } else {
-                    resultsDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
-                }
-            } finally {
-                button.disabled = false;
-                button.textContent = 'Compare';
+        // Chatbot Functions
+        function handleChatbotKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatbotMessage();
             }
         }
 
-        function displayResults(results) {
-            const resultsDiv = document.getElementById('comparison-results');
+        async function sendChatbotMessage() {
+            const input = document.getElementById('chatbot-input');
+            const message = input.value.trim();
             
-            let html = '<div class="comparison-content">';
+            if (!message) return;
             
-            if (results.profileData) {
-                html += '<div class="profile-summary"><h3>Profile Summary</h3>';
-                if (results.profileData.name) html += `<p><strong>Name:</strong> ${results.profileData.name}</p>`;
-                if (results.profileData.headline) html += `<p><strong>Headline:</strong> ${results.profileData.headline}</p>`;
-                if (results.profileData.location) html += `<p><strong>Location:</strong> ${results.profileData.location}</p>`;
-                html += '</div>';
+            // Add user message to chat
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            const typingId = addTypingIndicator();
+            
+            try {
+                // Check if it's a URL
+                if (message.includes('linkedin.com') || message.includes('twitter.com') || message.includes('x.com')) {
+                    addMessage('Researching your profile with Apify...', 'bot');
+                    
+                    const response = await fetch('/api/compare', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url: message })
+                    });
+                    
+                    removeTypingIndicator(typingId);
+                    
+                    if (!response.ok) {
+                        const error = await response.json();
+                        console.error('API Error:', error);
+                        addMessage(`Sorry, I encountered an error: ${error.error || 'Failed to research profile'}. Please try again!`, 'bot');
+                        return;
+                    }
+                    
+                    const results = await response.json();
+                    console.log('Comparison results:', results);
+                    
+                    if (!results.points || results.points.length === 0) {
+                        addMessage('I couldn\'t find specific connections. Please try again!', 'bot');
+                        return;
+                    }
+                    
+                    displayComparisonResults(results);
+                } else {
+                    // Handle general chat messages
+                    removeTypingIndicator(typingId);
+                    const botResponse = await handleChatMessage(message);
+                    addMessage(botResponse, 'bot');
+                }
+            } catch (error) {
+                console.error('Error in sendChatbotMessage:', error);
+                removeTypingIndicator(typingId);
+                addMessage(`Sorry, something went wrong: ${error.message}. Please try again!`, 'bot');
             }
+        }
+
+        async function handleChatMessage(message) {
+            const lowerMessage = message.toLowerCase();
             
-            if (results.commonalities && results.commonalities.length > 0) {
-                html += '<div class="commonalities"><h3>✨ Commonalities</h3><ul>';
-                results.commonalities.forEach(item => {
-                    html += `<li>${item}</li>`;
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+                return "Hi! I'm here to help you find connections with Lindy. Just paste your LinkedIn or Twitter profile URL and I'll analyze it!";
+            } else if (lowerMessage.includes('help')) {
+                return "I can help you find commonalities between your profile and Lindy's. Just share your LinkedIn or Twitter URL and I'll do the research!";
+            } else if (lowerMessage.includes('what') && lowerMessage.includes('do')) {
+                return "I research profiles using Apify, analyze them with AI, and find meaningful connections. Share your profile URL to get started!";
+            } else {
+                return "I'm here to help you find connections with Lindy! Please share your LinkedIn or Twitter profile URL and I'll analyze it for you.";
+            }
+        }
+
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chatbot-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.innerHTML = `<div class="message-content">${formatMessage(text)}</div>`;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const messagesContainer = document.getElementById('chatbot-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message typing-indicator';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = '<div class="message-content"><span class="typing-dots"><span>.</span><span>.</span><span>.</span></span></div>';
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            return 'typing-indicator';
+        }
+
+        function removeTypingIndicator(id) {
+            const indicator = document.getElementById(id);
+            if (indicator) indicator.remove();
+        }
+
+        function formatMessage(text) {
+            // Convert URLs to links
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
+        }
+
+        function displayComparisonResults(results) {
+            // Remove typing indicator if present
+            removeTypingIndicator('typing-indicator');
+            
+            let response = '';
+            
+            if (results.points && results.points.length > 0) {
+                response += `<strong>Here's what I found:</strong><br><br>`;
+                results.points.forEach(item => {
+                    response += `• ${item}<br>`;
                 });
-                html += '</ul></div>';
+            } else {
+                response = `I couldn't find specific connections at the moment. Please try again!`;
             }
             
-            if (results.differences && results.differences.length > 0) {
-                html += '<div class="differences"><h3>💡 Interesting Differences</h3><ul>';
-                results.differences.forEach(item => {
-                    html += `<li>${item}</li>`;
-                });
-                html += '</ul></div>';
-            }
-            
-            if ((!results.commonalities || results.commonalities.length === 0) && 
-                (!results.differences || results.differences.length === 0)) {
-                html += '<p>No significant matches found. Try a LinkedIn profile for better results!</p>';
-            }
-            
-            html += '</div>';
-            resultsDiv.innerHTML = html;
+            addMessage(response, 'bot');
+            addMessage('Want to compare another profile? Just paste another URL!', 'bot');
         }
     </script>
 </body>
