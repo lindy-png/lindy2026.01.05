@@ -37,6 +37,17 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'URL is required' });
     }
     
+    // Check for required API keys
+    if (!process.env.APIFY_API_TOKEN) {
+        console.error('APIFY_API_TOKEN is not set');
+        return res.status(500).json({ error: 'Server configuration error: Apify API token missing' });
+    }
+    
+    if (!process.env.ANTHROPIC_API_KEY) {
+        console.error('ANTHROPIC_API_KEY is not set');
+        return res.status(500).json({ error: 'Server configuration error: Anthropic API key missing' });
+    }
+    
     try {
         let profileData;
         
@@ -55,11 +66,19 @@ export default async function handler(req, res) {
         
         // Compare profiles using LLM
         console.log('Comparing profiles with Anthropic...');
+        console.log('User profile data:', JSON.stringify(profileData, null, 2));
         const comparison = await compareProfiles(profileData, lindyProfile);
         console.log('Comparison complete:', comparison.points?.length || 0, 'points found');
+        console.log('Comparison result:', JSON.stringify(comparison, null, 2));
+        
+        // Ensure we always return points
+        if (!comparison.points || comparison.points.length === 0) {
+            console.error('WARNING: No points in comparison result!');
+            comparison.points = ['Unable to generate comparison at this time. Please try again.'];
+        }
         
         res.json({
-            ...comparison
+            points: comparison.points
         });
     } catch (error) {
         console.error('Error in compare handler:', error);
@@ -172,14 +191,22 @@ async function scrapeTwitter(profileUrl) {
 
 async function compareProfiles(userProfile, lindyProfile) {
     try {
+        // Validate we have some profile data
+        if (!userProfile || (!userProfile.name && !userProfile.headline && !userProfile.summary)) {
+            console.error('Invalid user profile data:', userProfile);
+            return {
+                points: ['Unable to extract profile information. Please ensure the URL is correct and try again.']
+            };
+        }
+        
         // Format profiles for LLM
         const userProfileText = `
 Name: ${userProfile.name || 'Unknown'}
 Headline: ${userProfile.headline || ''}
 Location: ${userProfile.location || ''}
-Skills: ${(userProfile.skills || []).join(', ')}
-Experience: ${(userProfile.experiences || []).map(e => `${e.title || ''} at ${e.company || ''}`).join('; ')}
-Summary: ${userProfile.summary || userProfile.bio || ''}
+Skills: ${(userProfile.skills || []).join(', ') || 'Not specified'}
+Experience: ${(userProfile.experiences || []).map(e => `${e.title || ''} at ${e.company || ''}`).join('; ') || 'Not specified'}
+Summary: ${userProfile.summary || userProfile.bio || userProfile.tweets || 'Not specified'}
 `;
 
         const lindyProfileText = `
@@ -270,11 +297,18 @@ Each point should be a complete, standalone sentence that's insightful and speci
         // Ensure we have 3-4 points
         let points = comparison.points || [];
         if (points.length === 0) {
-            points = ['Unable to analyze profiles at the moment. Please try again!'];
+            console.error('No points found in comparison, response was:', responseText);
+            // Try to generate a fallback based on available data
+            points = [
+                'Both profiles are being analyzed for connections',
+                'Looking for shared professional experiences or interests',
+                'Exploring potential conversation starters'
+            ];
         } else if (points.length > 4) {
             points = points.slice(0, 4);
         }
 
+        console.log('Returning points:', points);
         return {
             points: points
         };
@@ -282,8 +316,7 @@ Each point should be a complete, standalone sentence that's insightful and speci
         console.error('LLM comparison error:', error);
         // Fallback to basic comparison if LLM fails
         return {
-            commonalities: ['Unable to analyze profiles at the moment. Please try again!'],
-            differences: []
+            points: ['Unable to analyze profiles at the moment. Please try again!']
         };
     }
 }

@@ -432,12 +432,23 @@
                     const results = await response.json();
                     console.log('Comparison results:', results);
                     
-                    if (!results.points || results.points.length === 0) {
-                        addMessage('I couldn\'t find specific connections. Please try again!', 'bot');
-                        return;
+                    // Check if we have points in the response
+                    if (results.points && results.points.length > 0) {
+                        displayComparisonResults(results);
+                    } else {
+                        // Fallback: check for old format (commonalities/differences) or show error
+                        if (results.commonalities && results.commonalities.length > 0) {
+                            // Convert old format to new format
+                            const allPoints = [
+                                ...(results.commonalities || []),
+                                ...(results.differences || [])
+                            ].slice(0, 4);
+                            displayComparisonResults({ points: allPoints });
+                        } else {
+                            console.error('No points found in results:', results);
+                            addMessage('I couldn\'t find specific connections. Please try again!', 'bot');
+                        }
                     }
-                    
-                    displayComparisonResults(results);
                 } else {
                     // Handle general chat messages
                     removeTypingIndicator(typingId);
