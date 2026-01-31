@@ -210,7 +210,7 @@
             <h2 class="section-title">Projects</h2>
             <div class="projects-content">
                 <ul class="projects-list">
-                    <li>stealth, seed, Series A</li>
+                    <li>Advisory roles (stealth, seed, series A+)</li>
                     <li>Sales and career coaching</li>
                     <li>Interview coaching and mentorship</li>
                     <li>Built: power dialer for SDRs, commission trackers, dashboards</li>
@@ -224,16 +224,26 @@
         <div class="container">
             <h2 class="section-title">Influences</h2>
             <div class="influences-content">
-                <h4 class="influences-subtitle">Books</h4>
-                <ul class="influences-list">
-                    <li>The Obstacle Is the Way</li>
-                    <li>Ego Is the Enemy</li>
-                    <li>Selling With</li>
-                    <li>To Sell Is Human</li>
-                    <li>The Psychology of Money</li>
-                    <li>The Hard Thing About Hard Things</li>
-                    <li>What You Do Is Who You Are</li>
-                </ul>
+                <div class="influences-group">
+                    <h4 class="influences-subtitle">Principles to live by</h4>
+                    <ul class="influences-list">
+                        <li>Insist on the highest level of standards</li>
+                        <li>Disagree and commit</li>
+                    </ul>
+                </div>
+                <div class="influences-group">
+                    <h4 class="influences-subtitle">Books</h4>
+                    <ul class="influences-list">
+                        <li>The Obstacle Is the Way — Ryan Holiday</li>
+                        <li>The Hard Thing About Hard Things — Ben Horowitz</li>
+                    </ul>
+                </div>
+                <div class="influences-group">
+                    <h4 class="influences-subtitle">Recent obsessions</h4>
+                    <ul class="influences-list">
+                        <li>Coming soon</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
@@ -402,7 +412,7 @@
             try {
                 // Check if it's a URL
                 if (message.includes('linkedin.com') || message.includes('twitter.com') || message.includes('x.com')) {
-                    addMessage('Researching your profile with Apify...', 'bot');
+                    addMessage('Researching your profile...', 'bot');
                     
                     const response = await fetch('/api/compare', {
                         method: 'POST',
@@ -449,7 +459,7 @@
             } else if (lowerMessage.includes('help')) {
                 return "I can help you find commonalities between your profile and Lindy's. Just share your LinkedIn or Twitter URL and I'll do the research!";
             } else if (lowerMessage.includes('what') && lowerMessage.includes('do')) {
-                return "I research profiles using Apify, analyze them with AI, and find meaningful connections. Share your profile URL to get started!";
+                return "I research profiles, analyze them with AI, and find meaningful connections. Share your profile URL to get started!";
             } else {
                 return "I'm here to help you find connections with Lindy! Please share your LinkedIn or Twitter profile URL and I'll analyze it for you.";
             }

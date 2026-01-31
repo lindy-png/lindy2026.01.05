@@ -838,6 +838,14 @@ a {
 
 .influences-content {
     max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.influences-group {
+    display: flex;
+    flex-direction: column;
 }
 
 .influences-subtitle {
@@ -852,9 +860,9 @@ a {
 .influences-list {
     list-style: none;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 0.8rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
 }
 
 .influences-list li {
